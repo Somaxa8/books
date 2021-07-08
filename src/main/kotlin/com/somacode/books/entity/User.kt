@@ -16,7 +16,9 @@ class User(
         var name: String? = null,
         var lastname: String? = null,
         var active: Boolean? = null,
-        
+        @OneToOne
+        var avatar: Document? = null,
+
         @JsonIgnore
         @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
         var authorities: MutableSet<Authority> = mutableSetOf()

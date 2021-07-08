@@ -3,6 +3,7 @@ package com.somacode.books.service
 import com.somacode.books.config.exception.BadRequestException
 import com.somacode.books.config.exception.NotFoundException
 import com.somacode.books.entity.Authority
+import com.somacode.books.entity.Document
 import com.somacode.books.entity.User
 import com.somacode.books.repository.UserRepository
 import com.somacode.books.repository.criteria.UserCriteria
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import javax.transaction.Transactional
 
 @Service
@@ -22,6 +24,7 @@ class UserService {
     @Autowired lateinit var userRepository: UserRepository
     @Autowired lateinit var userCriteria: UserCriteria
     @Autowired lateinit var authorityService: AuthorityService
+    @Autowired lateinit var documentService: DocumentService
     @Autowired lateinit var passwordEncoder: PasswordEncoder
     @Autowired lateinit var securityTool: SecurityTool
     @Value("\${custom.username}") lateinit var username: String
@@ -33,21 +36,16 @@ class UserService {
             println("UserService init()")
 
             register(
-                    email = "superadmin@template.com",
-                    password = password,
-                    name = "Superadmin"
-            )
-            register(
-                    email = "admin@template.com",
+                    email = "admin@somacode.com",
                     password = "1234",
-                    name = "Administrador"
+                    name = "Administrador",
+                    avatar = null
             )
-            authorityService.relateUser(Authority.Role.SUPER_ADMIN, 1)
             authorityService.relateUser(Authority.Role.ADMIN, 2)
         }
     }
 
-    fun register(email: String, password: String, name: String): User {
+    fun register(email: String, password: String, name: String, avatar: MultipartFile?): User {
         if (userRepository.existsByEmail(email)) {
             throw BadRequestException("Email already exists")
         }
@@ -62,7 +60,13 @@ class UserService {
                 active = true
         )
 
+        avatar?.let {
+            user.avatar = documentService.create(it, Document.Type.IMAGE, User::class.java.simpleName)
+        }
+
         userRepository.save(user)
+
+        authorityService.relateUser(Authority.Role.USER, user.id!!)
 
         return user
     }
