@@ -127,6 +127,18 @@ class UserService {
         userRepository.deleteById(id)
     }
 
+    fun activate(id: Long, sendEmail: Boolean = true): User {
+        val user = findById(id)
+        user.active = true
+        return userRepository.save(user)
+    }
+
+    fun deactivate(id: Long): User {
+        val user = findById(id)
+        user.active = false
+        return userRepository.save(user)
+    }
+
     fun getMyUser(): User {
         return findById(securityTool.getUserId())
     }
