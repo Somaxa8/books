@@ -22,6 +22,6 @@ class Authority(
         var enabled: Boolean? = null
 ) {
         enum class Role {
-                SUPER_ADMIN, ADMIN, SWAGGER, USER
+                SWAGGER, ADMIN, USER
         }
 }
