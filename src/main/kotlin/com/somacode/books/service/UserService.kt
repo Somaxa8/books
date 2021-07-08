@@ -122,9 +122,8 @@ class UserService {
     }
 
     fun delete(id: Long) {
-        if (!userRepository.existsById(id)) {
-            throw NotFoundException()
-        }
+        val user = findById(id)
+        user.avatar?.let { documentService.delete(it.id!!) }
         userRepository.deleteById(id)
     }
 
