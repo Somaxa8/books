@@ -11,7 +11,15 @@ class Book(
        var author: String? = null,
        var editorial: String? = null,
        @Lob var description: String? = null,
-       var date: LocalDate? = null,
+       var date: Int? = null,
        @OneToOne
        var book: Document? = null,
+
+       @ManyToMany
+       @JoinTable(
+               name = "rel_book_category",
+               joinColumns = [JoinColumn(name = "book_id", referencedColumnName = "id")],
+               inverseJoinColumns = [JoinColumn(name = "book_category_id", referencedColumnName = "id")]
+       )
+       var categories: MutableSet<BookCategory> = mutableSetOf(),
 ): Auditing()
