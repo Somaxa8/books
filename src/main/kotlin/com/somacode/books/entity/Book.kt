@@ -14,7 +14,8 @@ class Book(
        var date: Int? = null,
        @OneToOne
        var book: Document? = null,
-
+       @ManyToOne
+       var language: Language? = null,
        @ManyToMany
        @JoinTable(
                name = "rel_book_category",

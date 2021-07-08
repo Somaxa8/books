@@ -1,5 +1,7 @@
 package com.somacode.books.service
 
+import com.somacode.books.config.exception.NotFoundException
+import com.somacode.books.entity.Book
 import com.somacode.books.entity.Language
 import com.somacode.books.repository.LanguageRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +23,13 @@ class LanguageService {
 
     fun create(title: String): Language {
         return languageRepository.save(Language(title = title))
+    }
+
+    fun findById(id: Long): Language {
+        if (!languageRepository.existsById(id)) {
+            throw NotFoundException()
+        }
+        return languageRepository.getOne(id)
     }
 
 }

@@ -17,13 +17,15 @@ class BookService {
     @Autowired lateinit var bookRepository: BookRepository
     @Autowired lateinit var documentService: DocumentService
     @Autowired lateinit var securityTool: SecurityTool
+    @Autowired lateinit var languageService: LanguageService
 
     fun create(
-            title: String, author: String?, date: Int?,
+            title: String, author: String?, date: Int?, languageId: Long,
             editorial: String?, description: String?, bookFile: MultipartFile
     ): Book {
         val book = Book(
                 title = title,
+                language = languageService.findById(languageId),
                 book = documentService.create(bookFile, Document.Type.DOCUMENT, Book::class.java.simpleName)
         )
 
@@ -36,7 +38,7 @@ class BookService {
     }
 
     fun update(
-            id: Long, title: String?, author: String?, date: Int?,
+            id: Long, title: String?, author: String?, date: Int?, languageId: Long?,
             editorial: String?, description: String?, bookFile: MultipartFile?
     ): Book {
         if (!bookRepository.existsByIdAndCreatedBy_Id(id, securityTool.getUserId())) {
@@ -50,6 +52,7 @@ class BookService {
         date?.let { book.date = it }
         editorial?.let { book.editorial = it }
         description?.let { book.description = it }
+        languageId?.let { book.language = languageService.findById(it) }
         bookFile?.let { book.book = documentService.create(it, Document.Type.DOCUMENT, Book::class.java.simpleName) }
 
         return bookRepository.save(book)
