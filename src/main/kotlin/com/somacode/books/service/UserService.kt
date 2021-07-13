@@ -25,6 +25,7 @@ class UserService {
     @Autowired lateinit var userCriteria: UserCriteria
     @Autowired lateinit var authorityService: AuthorityService
     @Autowired lateinit var documentService: DocumentService
+    @Autowired lateinit var bookService: BookService
     @Autowired lateinit var passwordEncoder: PasswordEncoder
     @Autowired lateinit var securityTool: SecurityTool
     @Value("\${custom.username}") lateinit var username: String
@@ -41,7 +42,7 @@ class UserService {
                     name = "Administrador",
                     avatar = null
             )
-            authorityService.relateUser(Authority.Role.ADMIN, 2)
+            authorityService.relateUser(Authority.Role.ADMIN, 1)
         }
     }
 
@@ -71,13 +72,27 @@ class UserService {
         return user
     }
 
-    fun update(id: Long, request: User): User {
+    fun update(id: Long, name: String?, avatar: MultipartFile?): User {
         val user = findById(id)
 
-        request.name?.let { user.name = it }
-        request.lastname?.let { user.lastname = it }
+        name?.let { user.name = it }
+
+        avatar?.let {
+            user.avatar = documentService.create(it, Document.Type.IMAGE, User::class.java.simpleName)
+        }
 
         return userRepository.save(user)
+    }
+
+    fun findById(id: Long): User {
+        if (!userRepository.existsById(id)) {
+            throw NotFoundException()
+        }
+        return userRepository.getOne(id)
+    }
+
+    fun findFilterPageable(page: Int, size: Int, search: String?, role: Authority.Role): Page<User> {
+        return userCriteria.findFilterPageable(page, size, search, role)
     }
 
     fun existsById(id: Long): Boolean {
@@ -90,17 +105,6 @@ class UserService {
 
     fun existsByEmail(email: String): Boolean {
         return userRepository.existsByEmail(email)
-    }
-
-    fun findFilterPageable(page: Int, size: Int, search: String?, role: Authority.Role): Page<User> {
-        return userCriteria.findFilterPageable(page, size, search, role)
-    }
-
-    fun findById(id: Long): User {
-        if (!userRepository.existsById(id)) {
-            throw NotFoundException()
-        }
-        return userRepository.getOne(id)
     }
 
     fun findAllById(ids: List<Long>): List<User> {
