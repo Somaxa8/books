@@ -17,6 +17,8 @@ class LanguageService {
             create("Español")
             create("Ingles")
             create("Portugués")
+            create("Frances")
+            create("Italiano")
             create("Latín")
         }
     }

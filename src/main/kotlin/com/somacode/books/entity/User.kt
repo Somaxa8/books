@@ -21,6 +21,14 @@ class User(
 
         @JsonIgnore
         @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
-        var authorities: MutableSet<Authority> = mutableSetOf()
+        var authorities: MutableSet<Authority> = mutableSetOf(),
+
+        @ManyToMany
+        @JoinTable(
+                name = "rel_user_book",
+                joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
+                inverseJoinColumns = [JoinColumn(name = "book_id", referencedColumnName = "id")]
+        )
+        var favorites: MutableSet<Book> = mutableSetOf(),
 
 ): Auditing(), Serializable

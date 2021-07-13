@@ -1,10 +1,7 @@
 package com.somacode.books.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.OneToMany
+import javax.persistence.*
 
 @Entity
 class BookCategory(
@@ -12,6 +9,6 @@ class BookCategory(
        var id: Long? = null,
        var title: String? = null,
        @JsonIgnore
-       @OneToMany(mappedBy = "bookCategory")
-       val books: List<Book> = listOf()
+       @ManyToMany(mappedBy = "categories")
+       val books: MutableSet<Book> = mutableSetOf()
 ): Auditing()

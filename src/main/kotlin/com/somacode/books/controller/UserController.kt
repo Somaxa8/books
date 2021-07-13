@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.Email
 import javax.validation.constraints.Size
 
@@ -25,15 +27,26 @@ class UserController {
     fun postRegister(
             @RequestParam @Email email: String,
             @RequestParam @Size(min = 4) password: String,
-            @RequestParam @Size(min = 2) name: String
+            @RequestParam @Size(min = 2) name: String,
     ): ResponseEntity<User> {
-        val user = userService.findById(securityTool.getUserId())
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 userService.register(
                         email = email,
                         password = password,
-                        name = name
+                        name = name,
+                        avatar = null
                 )
+        )
+    }
+
+    @PostMapping("/api/users/{id}")
+    fun patchUser(
+            @PathVariable id: Long,
+            @RequestParam(required = false) @Size(min = 2) name: String?,
+            @RequestParam(required = false) avatar: MultipartFile?
+    ): ResponseEntity<User> {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                userService.update(id, name, avatar)
         )
     }
 

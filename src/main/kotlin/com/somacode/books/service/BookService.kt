@@ -16,6 +16,7 @@ class BookService {
 
     @Autowired lateinit var bookRepository: BookRepository
     @Autowired lateinit var documentService: DocumentService
+    @Autowired lateinit var userService: UserService
     @Autowired lateinit var securityTool: SecurityTool
     @Autowired lateinit var languageService: LanguageService
 
@@ -56,6 +57,18 @@ class BookService {
         bookFile?.let { book.book = documentService.create(it, Document.Type.DOCUMENT, Book::class.java.simpleName) }
 
         return bookRepository.save(book)
+    }
+
+    fun addFavorite(id: Long, userId:Long) {
+        val book = findById(id)
+        val user = userService.findById(userId)
+        user.favorites.add(book)
+    }
+
+    fun removeFavorite(id: Long, userId: Long) {
+        val book = findById(id)
+        val user = userService.findById(userId)
+        user.favorites.remove(book)
     }
 
     fun findById(id: Long): Book {

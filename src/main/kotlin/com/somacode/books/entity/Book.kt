@@ -1,5 +1,6 @@
 package com.somacode.books.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.time.LocalDate
 import javax.persistence.*
 
@@ -23,4 +24,9 @@ class Book(
                inverseJoinColumns = [JoinColumn(name = "book_category_id", referencedColumnName = "id")]
        )
        var categories: MutableSet<BookCategory> = mutableSetOf(),
+
+       @JsonIgnore
+       @ManyToMany(mappedBy = "favorites", fetch = FetchType.EAGER)
+       var users: MutableSet<User> = mutableSetOf(),
+
 ): Auditing()

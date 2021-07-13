@@ -33,4 +33,5 @@ class UserCriteria {
 
         return CriteriaTool.page(entityManager, q, page, size)
     }
+
 }
