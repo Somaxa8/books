@@ -17,32 +17,32 @@ class BookCriteria {
     lateinit var entityManager: EntityManager
 
 
-//    fun findFilterPageable(page: Int, size: Int, search: String?): Page<Book> {
-//        val cb = entityManager.criteriaBuilder
-//        val q = cb.createQuery(Book::class.java)
-//        val book = q.from(Book::class.java)
-//
-//        val order: Path<Set<String>> = book.get(Book_.ID)
-//
-//        val predicates: MutableList<Predicate> = mutableListOf()
-//
-//        if (!search.isNullOrBlank()) {
-//            val word = search.trim().toLowerCase()
-//            val like = "%$word%"
-//            predicates.add(
-//                    cb.or(
-//                            cb.like(cb.lower(order.get(Book_.title)), like),
-//                            cb.like(cb.lower(order.get(Book_.author)), like),
-//                            cb.like(cb.lower(order.get(Book_.editorial)), like)
-//                    )
-//            )
-//        }
-//
-//        q.select(book).where(
-//                *predicates.toTypedArray(),
-//        ).orderBy(cb.desc(order))
-//
-//        return CriteriaTool.page(entityManager, q, page, size)
-//    }
+    fun findFilterPageable(page: Int, size: Int, search: String?): Page<Book> {
+        val cb = entityManager.criteriaBuilder
+        val q = cb.createQuery(Book::class.java)
+        val book = q.from(Book::class.java)
+
+        val order: Path<Set<String>> = book.get(Book_.ID)
+
+        val predicates: MutableList<Predicate> = mutableListOf()
+
+        if (!search.isNullOrBlank()) {
+            val word = search.trim().toLowerCase()
+            val like = "%$word%"
+            predicates.add(
+                    cb.or(
+                            cb.like(cb.lower(order.get(Book_.title)), like),
+                            cb.like(cb.lower(order.get(Book_.author)), like),
+                            cb.like(cb.lower(order.get(Book_.editorial)), like)
+                    )
+            )
+        }
+
+        q.select(book).where(
+                *predicates.toTypedArray(),
+        ).orderBy(cb.desc(order))
+
+        return CriteriaTool.page(entityManager, q, page, size)
+    }
 
 }
