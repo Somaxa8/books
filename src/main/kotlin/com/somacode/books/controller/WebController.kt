@@ -1,4 +1,4 @@
-package com.lavamancer.mercurio.controller
+package com.somacode.books.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
