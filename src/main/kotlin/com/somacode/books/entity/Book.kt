@@ -12,7 +12,7 @@ class Book(
        var author: String? = null,
        var editorial: String? = null,
        @Lob var description: String? = null,
-       var date: Int? = null,
+       var date: LocalDate? = null,
        @OneToOne
        var book: Document? = null,
        @ManyToOne
