@@ -4,11 +4,14 @@ import com.somacode.books.config.exception.NotFoundException
 import com.somacode.books.entity.Book
 import com.somacode.books.entity.Document
 import com.somacode.books.repository.BookRepository
+import com.somacode.books.repository.criteria.BookCriteria
 import com.somacode.books.security.SecurityTool
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.time.LocalDate
 
 @Service
 @Transactional
@@ -19,9 +22,10 @@ class BookService {
     @Autowired lateinit var userService: UserService
     @Autowired lateinit var securityTool: SecurityTool
     @Autowired lateinit var languageService: LanguageService
+    @Autowired lateinit var bookCriteria: BookCriteria
 
     fun create(
-            title: String, author: String?, date: Int?, languageId: Long,
+            title: String, author: String?, date: LocalDate?, languageId: Long,
             editorial: String?, description: String?, bookFile: MultipartFile
     ): Book {
         val book = Book(
@@ -39,7 +43,7 @@ class BookService {
     }
 
     fun update(
-            id: Long, title: String?, author: String?, date: Int?, languageId: Long?,
+            id: Long, title: String?, author: String?, date: LocalDate?, languageId: Long?,
             editorial: String?, description: String?, bookFile: MultipartFile?
     ): Book {
         if (!bookRepository.existsByIdAndCreatedBy_Id(id, securityTool.getUserId())) {
@@ -78,7 +82,11 @@ class BookService {
         return bookRepository.getOne(id)
     }
 
-    fun deleteById(id: Long) {
+    fun findFilterPageable(page: Int, size: Int, search: String?): Page<Book> {
+        return bookCriteria.findFilterPageable(page, size, search)
+    }
+
+    fun delete(id: Long) {
         if (!bookRepository.existsByIdAndCreatedBy_Id(id, securityTool.getUserId())) {
             throw NotFoundException()
         }
