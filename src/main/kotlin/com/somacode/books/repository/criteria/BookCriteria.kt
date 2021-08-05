@@ -1,7 +1,7 @@
 package com.somacode.books.repository.criteria
 
-import com.somacode.books.entity.Authority
 import com.somacode.books.entity.Book
+import com.somacode.books.entity.Book_
 import com.somacode.books.service.tool.CriteriaTool
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Repository
@@ -31,9 +31,9 @@ class BookCriteria {
             val like = "%$word%"
             predicates.add(
                     cb.or(
-                            cb.like(cb.lower(order.get(Book_.title)), like),
-                            cb.like(cb.lower(order.get(Book_.author)), like),
-                            cb.like(cb.lower(order.get(Book_.editorial)), like)
+                            cb.like(cb.lower(book.get(Book_.title)), like),
+                            cb.like(cb.lower(book.get(Book_.author)), like),
+                            cb.like(cb.lower(book.get(Book_.editorial)), like)
                     )
             )
         }
