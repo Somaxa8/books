@@ -27,11 +27,22 @@ class LanguageService {
         return languageRepository.save(Language(title = title))
     }
 
+    fun findAll(): List<Language> {
+        return languageRepository.findAll()
+    }
+
     fun findById(id: Long): Language {
         if (!languageRepository.existsById(id)) {
             throw NotFoundException()
         }
         return languageRepository.getOne(id)
+    }
+
+    fun delete(id: Long) {
+        if (!languageRepository.existsById(id)) {
+            throw NotFoundException()
+        }
+        languageRepository.deleteById(id)
     }
 
 }
