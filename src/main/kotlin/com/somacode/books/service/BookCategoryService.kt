@@ -42,6 +42,9 @@ class BookCategoryService {
     }
 
     fun create(title: String): BookCategory {
+        if (title.isNullOrBlank()) {
+            throw IllegalArgumentException()
+        }
         return bookCategoryRepository.save(BookCategory(title = title))
     }
 
@@ -49,8 +52,14 @@ class BookCategoryService {
         if (!bookCategoryRepository.existsByIdAndCreatedBy_Id(id, securityTool.getUserId())) {
             throw NotFoundException()
         }
+
         val bookCategory = bookCategoryRepository.getOne(id)
-        request.title?.let { bookCategory.title = it }
+
+        if (request.title.isNullOrBlank()) {
+            throw IllegalArgumentException()
+        }
+
+        bookCategory.title = request.title
         return bookCategoryRepository.save(bookCategory)
     }
 
@@ -66,6 +75,10 @@ class BookCategoryService {
         book.categories.remove(bookCategory)
     }
 
+    fun findAll(): List<BookCategory> {
+        return bookCategoryRepository.findAll()
+    }
+
     fun findById(id: Long): BookCategory {
         if (!bookCategoryRepository.existsById(id)) {
             throw NotFoundException()
@@ -73,7 +86,7 @@ class BookCategoryService {
         return bookCategoryRepository.getOne(id)
     }
 
-    fun deleteById(id: Long) {
+    fun delete(id: Long) {
         if (!bookCategoryRepository.existsById(id)) {
             throw NotFoundException()
         }
