@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://booksdb:3310/booksdb
+    url: jdbc:mysql://booksdb:3306/booksdb
     username: root
     password: 1234
   h2:
