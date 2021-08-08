@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-rm -rf /root/template/project
-git clone -b master /root/template/git /root/template/project
-bash -x /root/template/project/gradle/bash/deploy.sh
+rm -rf /root/books/project
+git clone -b master /root/books/git /root/books/project
+bash -x /root/books/project/gradle/bash/deploy.sh

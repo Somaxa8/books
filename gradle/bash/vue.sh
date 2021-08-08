@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-npm run serve --prefix ../../../../vue/template-vue/
+npm run serve --prefix ../../../../vue/books-vue/

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-docker stop template
-docker rm template
-docker rmi template
+docker stop books
+docker rm books
+docker rmi books
 
-cd /root/template/project
+cd /root/books/project
 bash -x gradlew buildDocker --no-daemon --stacktrace -Dprod -Pprofile=prod -x test -Dkotlin.compiler.execution.strategy=in-process -Dkotlin.incremental=false
 
-docker logs -f template
+docker logs -f books
