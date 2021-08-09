@@ -17,7 +17,7 @@ class LanguageController {
         return ResponseEntity.status(HttpStatus.CREATED).body(languageService.create(title))
     }
 
-    @GetMapping("/api/languages")
+    @GetMapping("/public/languages")
     fun getLanguages(): ResponseEntity<List<Language>> {
         return ResponseEntity.status(HttpStatus.OK).body(languageService.findAll())
     }
