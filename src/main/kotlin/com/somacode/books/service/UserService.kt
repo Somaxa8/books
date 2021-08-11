@@ -9,6 +9,7 @@ import com.somacode.books.repository.UserRepository
 import com.somacode.books.repository.criteria.UserCriteria
 import com.somacode.books.security.SecurityTool
 import com.somacode.books.service.tool.Constants
+import com.somacode.books.service.tool.MockTool
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
@@ -28,6 +29,7 @@ class UserService {
     @Autowired lateinit var bookService: BookService
     @Autowired lateinit var passwordEncoder: PasswordEncoder
     @Autowired lateinit var securityTool: SecurityTool
+    @Autowired lateinit var mockTool: MockTool
     @Value("\${custom.username}") lateinit var username: String
     @Value("\${custom.password}") lateinit var password: String
 
@@ -40,7 +42,7 @@ class UserService {
                     email = "admin@somacode.com",
                     password = "1234",
                     name = "Administrador",
-                    avatar = null
+                    avatar = mockTool.multipartFileImage()
             )
             authorityService.relateUser(Authority.Role.ADMIN, 1)
         }
@@ -65,11 +67,7 @@ class UserService {
             user.avatar = documentService.create(it, Document.Type.IMAGE, User::class.java.simpleName)
         }
 
-        userRepository.save(user)
-
-        authorityService.relateUser(Authority.Role.USER, user.id!!)
-
-        return user
+        return userRepository.save(user)
     }
 
     fun update(id: Long, name: String?, avatar: MultipartFile?): User {
