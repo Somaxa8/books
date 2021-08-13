@@ -39,14 +39,13 @@ class UserController {
         )
     }
 
-    @PostMapping("/api/users/{id}")
+    @PatchMapping("/api/users/{id}")
     fun patchUser(
             @PathVariable id: Long,
-            @RequestParam(required = false) @Size(min = 2) name: String?,
-            @RequestParam(required = false) avatar: MultipartFile?
+            @RequestBody user: User
     ): ResponseEntity<User> {
         return ResponseEntity.status(HttpStatus.OK).body(
-                userService.update(id, name, avatar)
+                userService.update(id, user)
         )
     }
 
@@ -87,6 +86,19 @@ class UserController {
     ): ResponseEntity<Void> {
         userService.changePassword(id, password, newPassword)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
+    }
+
+    @PatchMapping("/api/users/{id}/avatar/update")
+    fun patchUserAvatar(
+            @PathVariable id: Long,
+            @RequestParam avatarFile: MultipartFile,
+    ): ResponseEntity<User> {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateAvatar(id, avatarFile))
+    }
+
+    @PatchMapping("/api/users/{id}/avatar/delete")
+    fun deleteUserAvatar(@PathVariable id: Long): ResponseEntity<User> {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.deleteAvatar(id))
     }
 
 }

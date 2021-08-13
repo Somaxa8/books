@@ -22,16 +22,28 @@ import javax.transaction.Transactional
 @Transactional
 class UserService {
 
-    @Autowired lateinit var userRepository: UserRepository
-    @Autowired lateinit var userCriteria: UserCriteria
-    @Autowired lateinit var authorityService: AuthorityService
-    @Autowired lateinit var documentService: DocumentService
-    @Autowired lateinit var bookService: BookService
-    @Autowired lateinit var passwordEncoder: PasswordEncoder
-    @Autowired lateinit var securityTool: SecurityTool
-    @Autowired lateinit var mockTool: MockTool
-    @Value("\${custom.username}") lateinit var username: String
-    @Value("\${custom.password}") lateinit var password: String
+    @Autowired
+    lateinit var userRepository: UserRepository
+    @Autowired
+    lateinit var userCriteria: UserCriteria
+    @Autowired
+    lateinit var authorityService: AuthorityService
+    @Autowired
+    lateinit var documentService: DocumentService
+    @Autowired
+    lateinit var bookService: BookService
+    @Autowired
+    lateinit var passwordEncoder: PasswordEncoder
+    @Autowired
+    lateinit var securityTool: SecurityTool
+    @Autowired
+    lateinit var oAuthService: OAuthService
+    @Autowired
+    lateinit var mockTool: MockTool
+    @Value("\${custom.username}")
+    lateinit var username: String
+    @Value("\${custom.password}")
+    lateinit var password: String
 
 
     fun init() {
@@ -70,15 +82,28 @@ class UserService {
         return userRepository.save(user)
     }
 
-    fun update(id: Long, name: String?, avatar: MultipartFile?): User {
+    fun update(id: Long, request: User): User {
         val user = findById(id)
 
-        name?.let { user.name = it }
-
-        avatar?.let {
-            user.avatar = documentService.create(it, Document.Type.IMAGE, User::class.java.simpleName)
+        request.name?.let { user.name = it }
+        request.lastname?.let { user.lastname = it }
+        request.email?.let {
+            oAuthService.logoutByUserId(id)
+            user.email = it
         }
 
+        return userRepository.save(user)
+    }
+
+    fun updateAvatar(id: Long, avatarFile: MultipartFile): User {
+        val user = findById(id)
+        user.avatar = documentService.create(avatarFile, Document.Type.IMAGE, User::class.java.simpleName)
+        return userRepository.save(user)
+    }
+
+    fun deleteAvatar(id: Long): User {
+        val user = findById(id)
+        user.avatar = null
         return userRepository.save(user)
     }
 
