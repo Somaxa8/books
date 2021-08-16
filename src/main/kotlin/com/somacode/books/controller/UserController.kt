@@ -96,7 +96,7 @@ class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateAvatar(id, avatarFile))
     }
 
-    @PatchMapping("/api/users/{id}/avatar/delete")
+    @DeleteMapping("/api/users/{id}/avatar/delete")
     fun deleteUserAvatar(@PathVariable id: Long): ResponseEntity<User> {
         return ResponseEntity.status(HttpStatus.OK).body(userService.deleteAvatar(id))
     }
