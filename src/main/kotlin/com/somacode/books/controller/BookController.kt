@@ -23,12 +23,13 @@ class BookController {
             @RequestParam(required = false) author: String?,
             @RequestParam(required = false) date: LocalDate?,
             @RequestParam languageId: Long,
+            @RequestParam categoryIds: String,
             @RequestParam(required = false) editorial: String?,
             @RequestParam(required = false) description: String?,
             @RequestParam bookFile: MultipartFile
     ): ResponseEntity<Book> {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                bookService.create(title, author, date, languageId, editorial, description, bookFile)
+                bookService.create(title, author, date, languageId, categoryIds, editorial, description, bookFile)
         )
     }
 
@@ -39,12 +40,13 @@ class BookController {
             @RequestParam(required = false) author: String?,
             @RequestParam(required = false) date: LocalDate?,
             @RequestParam(required = false) languageId: Long?,
+            @RequestParam categoryIds: String,
             @RequestParam(required = false) editorial: String?,
             @RequestParam(required = false) description: String?,
             @RequestParam(required = false) bookFile: MultipartFile?
     ): ResponseEntity<Book> {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                bookService.update(id, title, author, date, languageId, editorial, description, bookFile)
+                bookService.update(id, title, author, date, languageId, categoryIds, editorial, description, bookFile)
         )
     }
 

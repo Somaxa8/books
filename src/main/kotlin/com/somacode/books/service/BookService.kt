@@ -6,6 +6,7 @@ import com.somacode.books.entity.Document
 import com.somacode.books.repository.BookRepository
 import com.somacode.books.repository.criteria.BookCriteria
 import com.somacode.books.security.SecurityTool
+import com.somacode.books.service.BookCategoryService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
@@ -23,9 +24,10 @@ class BookService {
     @Autowired lateinit var securityTool: SecurityTool
     @Autowired lateinit var languageService: LanguageService
     @Autowired lateinit var bookCriteria: BookCriteria
+    @Autowired lateinit var bookCategoryService: BookCategoryService
 
     fun create(
-            title: String, author: String?, date: LocalDate?, languageId: Long,
+            title: String, author: String?, date: LocalDate?, languageId: Long, categoryIds: String,
             editorial: String?, description: String?, bookFile: MultipartFile
     ): Book {
         val book = Book(
@@ -39,11 +41,20 @@ class BookService {
         editorial?.let { book.editorial = it }
         description?.let { book.description = it }
 
-        return bookRepository.save(book)
+        val response = bookRepository.save(book)
+
+        val values = categoryIds.split(",")
+        values.forEach {
+            val book = findById(response.id!!)
+            val bookCategory = bookCategoryService.findById(it.toLong())
+            book.categories.add(bookCategory)
+        }
+
+        return response
     }
 
     fun update(
-            id: Long, title: String?, author: String?, date: LocalDate?, languageId: Long?,
+            id: Long, title: String?, author: String?, date: LocalDate?, languageId: Long?, categoryIds: String,
             editorial: String?, description: String?, bookFile: MultipartFile?
     ): Book {
         if (!bookRepository.existsByIdAndCreatedBy_Id(id, securityTool.getUserId())) {
@@ -59,6 +70,14 @@ class BookService {
         description?.let { book.description = it }
         languageId?.let { book.language = languageService.findById(it) }
         bookFile?.let { book.book = documentService.create(it, Document.Type.DOCUMENT, Book::class.java.simpleName) }
+        book.categories = mutableSetOf()
+
+        val values = categoryIds.split(",")
+        values.forEach {
+            val book = findById(id)
+            val bookCategory = bookCategoryService.findById(it.toLong())
+            book.categories.add(bookCategory)
+        }
 
         return bookRepository.save(book)
     }
