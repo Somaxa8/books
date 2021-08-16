@@ -87,10 +87,6 @@ class UserService {
 
         request.name?.let { user.name = it }
         request.lastname?.let { user.lastname = it }
-        request.email?.let {
-            oAuthService.logoutByUserId(id)
-            user.email = it
-        }
 
         return userRepository.save(user)
     }
