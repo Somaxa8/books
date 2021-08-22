@@ -27,7 +27,7 @@ class BookService {
     @Autowired lateinit var bookCategoryService: BookCategoryService
 
     fun create(
-            title: String, author: String?, date: LocalDate?, languageId: Long, categoryIds: String,
+            title: String, author: String?, date: LocalDate?, languageId: Long, categoryIds: List<Long>,
             editorial: String?, description: String?, bookFile: MultipartFile
     ): Book {
         val book = Book(
@@ -43,8 +43,7 @@ class BookService {
 
         val response = bookRepository.save(book)
 
-        val values = categoryIds.split(",")
-        values.forEach {
+        categoryIds.forEach {
             val book = findById(response.id!!)
             val bookCategory = bookCategoryService.findById(it.toLong())
             book.categories.add(bookCategory)
@@ -54,7 +53,7 @@ class BookService {
     }
 
     fun update(
-            id: Long, title: String?, author: String?, date: LocalDate?, languageId: Long?, categoryIds: String,
+            id: Long, title: String?, author: String?, date: LocalDate?, languageId: Long?, categoryIds: List<Long>,
             editorial: String?, description: String?, bookFile: MultipartFile?
     ): Book {
         if (!bookRepository.existsByIdAndCreatedBy_Id(id, securityTool.getUserId())) {
@@ -72,10 +71,9 @@ class BookService {
         bookFile?.let { book.book = documentService.create(it, Document.Type.DOCUMENT, Book::class.java.simpleName) }
         book.categories = mutableSetOf()
 
-        val values = categoryIds.split(",")
-        values.forEach {
+        categoryIds.forEach {
             val book = findById(id)
-            val bookCategory = bookCategoryService.findById(it.toLong())
+            val bookCategory = bookCategoryService.findById(it)
             book.categories.add(bookCategory)
         }
 

@@ -23,7 +23,7 @@ class BookController {
             @RequestParam(required = false) author: String?,
             @RequestParam(required = false) date: LocalDate?,
             @RequestParam languageId: Long,
-            @RequestParam categoryIds: String,
+            @RequestParam categoryIds: List<Long>,
             @RequestParam(required = false) editorial: String?,
             @RequestParam(required = false) description: String?,
             @RequestParam bookFile: MultipartFile
@@ -40,7 +40,7 @@ class BookController {
             @RequestParam(required = false) author: String?,
             @RequestParam(required = false) date: LocalDate?,
             @RequestParam(required = false) languageId: Long?,
-            @RequestParam categoryIds: String,
+            @RequestParam categoryIds: List<Long>,
             @RequestParam(required = false) editorial: String?,
             @RequestParam(required = false) description: String?,
             @RequestParam(required = false) bookFile: MultipartFile?
