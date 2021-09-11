@@ -45,7 +45,7 @@ class BookService {
 
         categoryIds.forEach {
             val book = findById(response.id!!)
-            val bookCategory = bookCategoryService.findById(it.toLong())
+            val bookCategory = bookCategoryService.findById(it)
             book.categories.add(bookCategory)
         }
 

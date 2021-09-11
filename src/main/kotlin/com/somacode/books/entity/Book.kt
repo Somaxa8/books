@@ -13,7 +13,6 @@ class Book(
        var editorial: String? = null,
        @Lob var description: String? = null,
        var date: LocalDate? = null,
-       @JsonIgnore
        @OneToOne
        var book: Document? = null,
        @ManyToOne
