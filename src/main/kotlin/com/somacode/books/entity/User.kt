@@ -25,10 +25,10 @@ class User(
 
         @ManyToMany
         @JoinTable(
-                name = "rel_user_book",
+                name = "rel_user_book_favorites",
                 joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
                 inverseJoinColumns = [JoinColumn(name = "book_id", referencedColumnName = "id")]
         )
-        var favorites: MutableSet<Book> = mutableSetOf(),
+        var bookFavorites: MutableSet<Book> = mutableSetOf()
 
 ): Auditing(), Serializable

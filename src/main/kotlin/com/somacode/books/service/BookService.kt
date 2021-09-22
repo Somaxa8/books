@@ -2,13 +2,15 @@ package com.somacode.books.service
 
 import com.somacode.books.config.exception.NotFoundException
 import com.somacode.books.entity.Book
+import com.somacode.books.entity.Book_
 import com.somacode.books.entity.Document
 import com.somacode.books.repository.BookRepository
 import com.somacode.books.repository.criteria.BookCriteria
 import com.somacode.books.security.SecurityTool
-import com.somacode.books.service.BookCategoryService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -25,6 +27,7 @@ class BookService {
     @Autowired lateinit var languageService: LanguageService
     @Autowired lateinit var bookCriteria: BookCriteria
     @Autowired lateinit var bookCategoryService: BookCategoryService
+
 
     fun create(
             title: String, author: String?, date: LocalDate?, languageId: Long, categoryIds: List<Long>,
@@ -83,13 +86,20 @@ class BookService {
     fun addFavorite(id: Long, userId:Long) {
         val book = findById(id)
         val user = userService.findById(userId)
-        user.favorites.add(book)
+        user.bookFavorites.add(book)
     }
 
     fun removeFavorite(id: Long, userId: Long) {
         val book = findById(id)
         val user = userService.findById(userId)
-        user.favorites.remove(book)
+        user.bookFavorites.remove(book)
+    }
+
+    fun findByUserIdPageable(page: Int, size: Int, userId: Long): Page<Book> {
+        val user = userService.findById(userId)
+        val sort = Sort.by(Book_.ID).descending()
+        var pageRequest = PageRequest.of(page, size, sort)
+        return bookRepository.findAllByUserFavorites_Id(user.id!!, pageRequest)
     }
 
     fun findById(id: Long): Book {
@@ -99,8 +109,8 @@ class BookService {
         return bookRepository.getOne(id)
     }
 
-    fun findFilterPageable(page: Int, size: Int, search: String?): Page<Book> {
-        return bookCriteria.findFilterPageable(page, size, search)
+    fun findFilterPageable(page: Int, size: Int, search: String?, categoryId: Long?, createdById: Long?, start: LocalDate?, end: LocalDate?): Page<Book> {
+        return bookCriteria.findFilterPageable(page, size, search, categoryId, createdById, start, end)
     }
 
     fun delete(id: Long) {

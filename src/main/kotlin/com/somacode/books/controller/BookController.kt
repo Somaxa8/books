@@ -7,6 +7,7 @@ import com.somacode.books.service.tool.Constants
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDate
@@ -50,6 +51,23 @@ class BookController {
         )
     }
 
+//    @PreAuthorize("@securityTool.isUser(userId)")
+    @GetMapping("/api/@me/users/{userId}/books")
+    fun getMyBooks(
+            @PathVariable userId: Long,
+            @RequestParam(required = false) search: String?,
+            @RequestParam(required = false) categoryId: Long?,
+            @RequestParam(required = false) start: LocalDate?,
+            @RequestParam(required = false) end: LocalDate?,
+            @RequestParam page: Int,
+            @RequestParam size: Int
+    ): ResponseEntity<List<Book>> {
+        val result = bookService.findFilterPageable(page, size, search, categoryId, userId, start, end)
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(Constants.X_TOTAL_COUNT_HEADER, result.totalElements.toString())
+                .body(result.content)
+    }
+
     @GetMapping("/public/books/{id}")
     fun getBook(@PathVariable id: Long): ResponseEntity<Book> {
         return ResponseEntity.status(HttpStatus.OK).body(bookService.findById(id))
@@ -58,10 +76,26 @@ class BookController {
     @GetMapping("/public/books")
     fun getBooks(
             @RequestParam(required = false) search: String?,
+            @RequestParam(required = false) categoryId: Long?,
+            @RequestParam(required = false) start: LocalDate?,
+            @RequestParam(required = false) end: LocalDate?,
             @RequestParam page: Int,
             @RequestParam size: Int
     ): ResponseEntity<List<Book>> {
-        val result = bookService.findFilterPageable(page, size, search)
+        val result = bookService.findFilterPageable(page, size, search, categoryId, null, start, end)
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(Constants.X_TOTAL_COUNT_HEADER, result.totalElements.toString())
+                .body(result.content)
+    }
+
+//    @PreAuthorize("@securityTool.isUser(userId)")
+    @GetMapping("/public/users/{userId}/books/favorites")
+    fun getFavoriteBooks(
+            @PathVariable userId: Long,
+            @RequestParam page: Int,
+            @RequestParam size: Int
+    ): ResponseEntity<List<Book>> {
+        val result = bookService.findByUserIdPageable(page, size, userId)
         return ResponseEntity.status(HttpStatus.OK)
                 .header(Constants.X_TOTAL_COUNT_HEADER, result.totalElements.toString())
                 .body(result.content)
