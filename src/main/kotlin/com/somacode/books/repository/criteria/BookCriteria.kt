@@ -24,17 +24,15 @@ class BookCriteria {
         val book = q.from(Book::class.java)
 
         val order = book.get(Book_.id)
-        val createdBy = book.join(Book_.createdBy)
-        val bookCategory = book.join(Book_.categories)
 
         val predicates: MutableList<Predicate> = mutableListOf()
 
         createdById?.let {
-            predicates.add(cb.equal(createdBy.get(User_.id), it))
+            predicates.add(cb.equal(book.join(Book_.createdBy).get(User_.id), it))
         }
 
         categoryId?.let {
-            predicates.add(cb.equal(bookCategory.get(BookCategory_.id), it))
+            predicates.add(cb.equal(book.join(Book_.categories).get(BookCategory_.id), it))
         }
 
         // search between dates
