@@ -97,7 +97,7 @@ class BookController {
             @RequestParam page: Int,
             @RequestParam size: Int
     ): ResponseEntity<List<Book>> {
-        val result = bookService.findFilterPageable(page, size, search, categoryId, null, null, null, null)
+        val result = bookService.findFilterPageable(page, size, search, categoryId, null, null, null, userId)
         return ResponseEntity.status(HttpStatus.OK)
                 .header(Constants.X_TOTAL_COUNT_HEADER, result.totalElements.toString())
                 .body(result.content)
