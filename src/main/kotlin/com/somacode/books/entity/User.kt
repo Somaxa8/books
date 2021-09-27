@@ -23,6 +23,7 @@ class User(
         @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
         var authorities: MutableSet<Authority> = mutableSetOf(),
 
+        @JsonIgnore
         @ManyToMany
         @JoinTable(
                 name = "rel_user_book_favorites",
