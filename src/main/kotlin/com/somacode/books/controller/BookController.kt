@@ -62,7 +62,7 @@ class BookController {
             @RequestParam page: Int,
             @RequestParam size: Int
     ): ResponseEntity<List<Book>> {
-        val result = bookService.findFilterPageable(page, size, search, categoryId, userId, start, end)
+        val result = bookService.findFilterPageable(page, size, search, categoryId, userId, start, end, null)
         return ResponseEntity.status(HttpStatus.OK)
                 .header(Constants.X_TOTAL_COUNT_HEADER, result.totalElements.toString())
                 .body(result.content)
@@ -82,7 +82,7 @@ class BookController {
             @RequestParam page: Int,
             @RequestParam size: Int
     ): ResponseEntity<List<Book>> {
-        val result = bookService.findFilterPageable(page, size, search, categoryId, null, start, end)
+        val result = bookService.findFilterPageable(page, size, search, categoryId, null, start, end, null)
         return ResponseEntity.status(HttpStatus.OK)
                 .header(Constants.X_TOTAL_COUNT_HEADER, result.totalElements.toString())
                 .body(result.content)
@@ -92,10 +92,12 @@ class BookController {
     @GetMapping("/public/users/{userId}/books/favorites")
     fun getFavoriteBooks(
             @PathVariable userId: Long,
+            @RequestParam(required = false) search: String?,
+            @RequestParam(required = false) categoryId: Long?,
             @RequestParam page: Int,
             @RequestParam size: Int
     ): ResponseEntity<List<Book>> {
-        val result = bookService.findByUserIdPageable(page, size, userId)
+        val result = bookService.findFilterPageable(page, size, search, categoryId, null, null, null, null)
         return ResponseEntity.status(HttpStatus.OK)
                 .header(Constants.X_TOTAL_COUNT_HEADER, result.totalElements.toString())
                 .body(result.content)

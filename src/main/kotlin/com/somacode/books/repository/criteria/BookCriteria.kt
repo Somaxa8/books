@@ -18,7 +18,7 @@ class BookCriteria {
     lateinit var entityManager: EntityManager
 
 
-    fun findFilterPageable(page: Int, size: Int, search: String?, categoryId: Long?, createdById: Long?, start: LocalDate?, end: LocalDate?): Page<Book> {
+    fun findFilterPageable(page: Int, size: Int, search: String?, categoryId: Long?, createdById: Long?, start: LocalDate?, end: LocalDate?, userFavoriteId: Long?): Page<Book> {
         val cb = entityManager.criteriaBuilder
         val q = cb.createQuery(Book::class.java)
         val book = q.from(Book::class.java)
@@ -33,6 +33,10 @@ class BookCriteria {
 
         categoryId?.let {
             predicates.add(cb.equal(book.join(Book_.categories).get(BookCategory_.id), it))
+        }
+
+        userFavoriteId?.let {
+            predicates.add(cb.equal(book.join(Book_.userFavorites).get(User_.id), it))
         }
 
         // search between dates

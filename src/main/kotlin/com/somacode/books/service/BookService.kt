@@ -95,13 +95,6 @@ class BookService {
         user.bookFavorites.remove(book)
     }
 
-    fun findByUserIdPageable(page: Int, size: Int, userId: Long): Page<Book> {
-        val user = userService.findById(userId)
-        val sort = Sort.by(Book_.ID).descending()
-        var pageRequest = PageRequest.of(page, size, sort)
-        return bookRepository.findAllByUserFavorites_Id(user.id!!, pageRequest)
-    }
-
     fun findById(id: Long): Book {
         if (!bookRepository.existsById(id)) {
             throw NotFoundException()
@@ -109,8 +102,8 @@ class BookService {
         return bookRepository.getOne(id)
     }
 
-    fun findFilterPageable(page: Int, size: Int, search: String?, categoryId: Long?, createdById: Long?, start: LocalDate?, end: LocalDate?): Page<Book> {
-        return bookCriteria.findFilterPageable(page, size, search, categoryId, createdById, start, end)
+    fun findFilterPageable(page: Int, size: Int, search: String?, categoryId: Long?, createdById: Long?, start: LocalDate?, end: LocalDate?, userFavoriteId: Long?): Page<Book> {
+        return bookCriteria.findFilterPageable(page, size, search, categoryId, createdById, start, end, userFavoriteId)
     }
 
     fun delete(id: Long) {
