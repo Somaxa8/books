@@ -89,7 +89,7 @@ class BookController {
     }
 
 //    @PreAuthorize("@securityTool.isUser(userId)")
-    @GetMapping("/public/users/{userId}/books/favorites")
+    @GetMapping("/api/users/{userId}/books/favorites")
     fun getFavoriteBooks(
             @PathVariable userId: Long,
             @RequestParam(required = false) search: String?,
