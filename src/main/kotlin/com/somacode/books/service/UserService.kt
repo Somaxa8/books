@@ -70,7 +70,10 @@ class UserService {
             user.avatar = documentService.create(it, Document.Type.IMAGE, User::class.java.simpleName)
         }
 
-        return userRepository.save(user)
+        val response = userRepository.save(user)
+        authorityService.relateUser(Authority.Role.USER, response.id!!)
+
+        return response
     }
 
     fun update(id: Long, request: User): User {
