@@ -23,19 +23,15 @@ class UserController {
     @Autowired lateinit var userService: UserService
     @Autowired lateinit var securityTool: SecurityTool
 
-    @PostMapping("/api/users/register")
+    @PostMapping("/public/users/register")
     fun postRegister(
             @RequestParam @Email email: String,
             @RequestParam @Size(min = 4) password: String,
             @RequestParam @Size(min = 2) name: String,
+            @RequestParam @Size(min = 2) lastname: String,
     ): ResponseEntity<User> {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                userService.register(
-                        email = email,
-                        password = password,
-                        name = name,
-                        avatar = null
-                )
+                userService.register(email, password, name, lastname, null)
         )
     }
 

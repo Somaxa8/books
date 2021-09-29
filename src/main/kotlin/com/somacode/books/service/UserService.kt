@@ -22,28 +22,17 @@ import javax.transaction.Transactional
 @Transactional
 class UserService {
 
-    @Autowired
-    lateinit var userRepository: UserRepository
-    @Autowired
-    lateinit var userCriteria: UserCriteria
-    @Autowired
-    lateinit var authorityService: AuthorityService
-    @Autowired
-    lateinit var documentService: DocumentService
-    @Autowired
-    lateinit var bookService: BookService
-    @Autowired
-    lateinit var passwordEncoder: PasswordEncoder
-    @Autowired
-    lateinit var securityTool: SecurityTool
-    @Autowired
-    lateinit var oAuthService: OAuthService
-    @Autowired
-    lateinit var mockTool: MockTool
-    @Value("\${custom.username}")
-    lateinit var username: String
-    @Value("\${custom.password}")
-    lateinit var password: String
+    @Autowired lateinit var userRepository: UserRepository
+    @Autowired lateinit var userCriteria: UserCriteria
+    @Autowired lateinit var authorityService: AuthorityService
+    @Autowired lateinit var documentService: DocumentService
+    @Autowired lateinit var bookService: BookService
+    @Autowired lateinit var passwordEncoder: PasswordEncoder
+    @Autowired lateinit var securityTool: SecurityTool
+    @Autowired lateinit var oAuthService: OAuthService
+    @Autowired lateinit var mockTool: MockTool
+    @Value("\${custom.username}") lateinit var username: String
+    @Value("\${custom.password}") lateinit var password: String
 
 
     fun init() {
@@ -53,14 +42,15 @@ class UserService {
             register(
                     email = "admin@somacode.com",
                     password = "1234",
-                    name = "Administrador",
+                    name = "Soma",
+                    lastname = "Black",
                     avatar = mockTool.multipartFileImage()
             )
             authorityService.relateUser(Authority.Role.ADMIN, 1)
         }
     }
 
-    fun register(email: String, password: String, name: String, avatar: MultipartFile?): User {
+    fun register(email: String, password: String, name: String, lastname: String, avatar: MultipartFile?): User {
         if (userRepository.existsByEmail(email)) {
             throw BadRequestException("Email already exists")
         }
@@ -72,6 +62,7 @@ class UserService {
                 email = email,
                 password = passwordEncoder.encode(password),
                 name = name,
+                lastname = name,
                 active = true
         )
 
