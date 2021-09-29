@@ -62,7 +62,7 @@ class UserService {
                 email = email,
                 password = passwordEncoder.encode(password),
                 name = name,
-                lastname = name,
+                lastname = lastname,
                 active = true
         )
 
