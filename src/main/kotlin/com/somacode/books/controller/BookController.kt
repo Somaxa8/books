@@ -120,4 +120,19 @@ class BookController {
         bookService.removeFavorite(id, securityTool.getUserId())
         return ResponseEntity.status(HttpStatus.OK).body(null)
     }
+
+    @PostMapping("/api/synchronize/books")
+    fun synchronizeBook(
+            @RequestParam title: String,
+            @RequestParam author: String,
+            @RequestParam category: String,
+            @RequestParam editorial: String,
+            @RequestParam description: String,
+            @RequestParam bookFile: MultipartFile,
+            @RequestParam coverFile: MultipartFile
+    ): ResponseEntity<Book> {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                bookService.synchronizeBook(title, author, category, editorial, description, bookFile, coverFile)
+        )
+    }
 }

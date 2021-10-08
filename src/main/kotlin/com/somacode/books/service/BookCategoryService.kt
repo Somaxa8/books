@@ -92,4 +92,12 @@ class BookCategoryService {
         }
         bookCategoryRepository.deleteById(id)
     }
+
+    fun existByTitle(title: String): Boolean {
+        return bookCategoryRepository.existsByTitle(title)
+    }
+
+    fun findByTitle(title: String): BookCategory {
+        return bookCategoryRepository.findByTitle(title)
+    }
 }

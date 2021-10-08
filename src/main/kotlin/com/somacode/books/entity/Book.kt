@@ -6,22 +6,24 @@ import javax.persistence.*
 
 @Entity
 class Book(
-        @Id @GeneratedValue
+       @Id @GeneratedValue
        var id: Long? = null,
-        var title: String? = null,
-        var author: String? = null,
-        var editorial: String? = null,
-        @Lob var description: String? = null,
-        var date: LocalDate? = null,
-        @OneToOne
+       var title: String? = null,
+       var author: String? = null,
+       var editorial: String? = null,
+       @Lob var description: String? = null,
+       var date: LocalDate? = null,
+       @OneToOne
        var book: Document? = null,
-        @ManyToOne
+       @OneToOne
+       var cover: Document? = null,
+       @ManyToOne
        var language: Language? = null,
-        @ManyToMany
+       @ManyToMany
        @JoinTable(
-               name = "rel_book_category",
-               joinColumns = [JoinColumn(name = "book_id", referencedColumnName = "id")],
-               inverseJoinColumns = [JoinColumn(name = "book_category_id", referencedColumnName = "id")]
+              name = "rel_book_category",
+              joinColumns = [JoinColumn(name = "book_id", referencedColumnName = "id")],
+              inverseJoinColumns = [JoinColumn(name = "book_category_id", referencedColumnName = "id")]
        )
        var categories: MutableSet<BookCategory> = mutableSetOf(),
 

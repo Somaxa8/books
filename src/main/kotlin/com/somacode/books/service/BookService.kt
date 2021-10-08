@@ -113,4 +113,31 @@ class BookService {
         bookRepository.deleteById(id)
     }
 
+    fun synchronizeBook(
+            title: String, author: String, category: String, editorial: String,
+            description: String, bookFile: MultipartFile, coverFile: MultipartFile
+    ): Book {
+        val book = Book(
+                title = title,
+                author = author,
+                editorial = editorial,
+                description = description,
+                language = languageService.findById(1),
+                book = documentService.create(bookFile, Document.Type.DOCUMENT, Book::class.java.simpleName),
+                cover = documentService.create(coverFile, Document.Type.IMAGE, Book::class.java.simpleName)
+        )
+
+        val response = bookRepository.save(book)
+
+        if (!bookCategoryService.existByTitle(category)) {
+            val bookCategory = bookCategoryService.create(category)
+            bookCategoryService.relateCategory(bookCategory.id!!, response.id!!)
+        } else {
+            val bookCategory = bookCategoryService.findByTitle(category)
+            bookCategoryService.relateCategory(bookCategory.id!!, response.id!!)
+        }
+
+        return response
+    }
+
 }
