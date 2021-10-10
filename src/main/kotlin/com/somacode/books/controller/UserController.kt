@@ -35,6 +35,7 @@ class UserController {
         )
     }
 
+    @PreAuthorize("@securityTool.isUser(#userId)")
     @PatchMapping("/api/users/{id}")
     fun patchUser(
             @PathVariable id: Long,
@@ -45,6 +46,7 @@ class UserController {
         )
     }
 
+    @PreAuthorize("@securityTool.isAdmin()")
     @GetMapping("/api/users")
     fun getUsers(
             @RequestParam(required = false) search: String?,
@@ -58,6 +60,7 @@ class UserController {
                 .body(result.content)
     }
 
+    @PreAuthorize("@securityTool.isAdmin()")
     @GetMapping("/api/users/{id}")
     fun getUser(@PathVariable id: Long): ResponseEntity<User> {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findById(id))
@@ -68,12 +71,14 @@ class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getMyUser())
     }
 
+    @PreAuthorize("@securityTool.isAdmin()")
     @DeleteMapping("/api/users/{id}")
     fun deleteUser(@PathVariable id: Long): ResponseEntity<Void> {
         userService.delete(id)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
     }
 
+    @PreAuthorize("@securityTool.isUser(#userId)")
     @PatchMapping("/api/users/{id}/change-password")
     fun patchUserChangePassword(
             @PathVariable id: Long,
@@ -84,6 +89,7 @@ class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
     }
 
+    @PreAuthorize("@securityTool.isUser(#userId)")
     @PatchMapping("/api/users/{id}/avatar/update")
     fun patchUserAvatar(
             @PathVariable id: Long,
@@ -92,9 +98,17 @@ class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateAvatar(id, avatarFile))
     }
 
+    @PreAuthorize("@securityTool.isUser(#userId)")
     @DeleteMapping("/api/users/{id}/avatar/delete")
     fun deleteUserAvatar(@PathVariable id: Long): ResponseEntity<User> {
         return ResponseEntity.status(HttpStatus.OK).body(userService.deleteAvatar(id))
+    }
+
+    @PreAuthorize("@securityTool.isAdmin()")
+    @PatchMapping("/api/users/{id}/activate")
+    fun patchUserActivate(@PathVariable id: Long, @RequestParam active: Boolean): ResponseEntity<Void> {
+        if (active) userService.activate(id) else userService.deactivate(id)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
     }
 
 }

@@ -3,6 +3,7 @@ package com.somacode.books.controller
 import com.somacode.books.entity.Book
 import com.somacode.books.security.SecurityTool
 import com.somacode.books.service.BookService
+import com.somacode.books.security.BookSecurity
 import com.somacode.books.service.tool.Constants
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -17,6 +18,7 @@ class BookController {
 
     @Autowired lateinit var bookService: BookService
     @Autowired lateinit var securityTool: SecurityTool
+    @Autowired lateinit var bookSecurity: BookSecurity
 
     @PostMapping("/api/books")
     fun postBook(
@@ -34,6 +36,7 @@ class BookController {
         )
     }
 
+    @PreAuthorize("@bookSecurity.isOwn(#id) or @securityTool.isAdmin()")
     @PatchMapping("/api/books/{id}")
     fun patchBook(
             @PathVariable id: Long,
@@ -51,7 +54,7 @@ class BookController {
         )
     }
 
-//    @PreAuthorize("@securityTool.isUser(userId)")
+    @PreAuthorize("@securityTool.isUser(#userId)")
     @GetMapping("/api/@me/users/{userId}/books")
     fun getMyBooks(
             @PathVariable userId: Long,
@@ -88,7 +91,7 @@ class BookController {
                 .body(result.content)
     }
 
-//    @PreAuthorize("@securityTool.isUser(userId)")
+    @PreAuthorize("@securityTool.isUser(#userId)")
     @GetMapping("/api/users/{userId}/books/favorites")
     fun getFavoriteBooks(
             @PathVariable userId: Long,
@@ -103,6 +106,7 @@ class BookController {
                 .body(result.content)
     }
 
+    @PreAuthorize("@bookSecurity.isOwn(#id) or @securityTool.isAdmin()")
     @DeleteMapping("/api/books/{id}")
     fun deleteBook(@PathVariable id: Long): ResponseEntity<Void> {
         bookService.delete(id)
@@ -121,6 +125,7 @@ class BookController {
         return ResponseEntity.status(HttpStatus.OK).body(null)
     }
 
+    @PreAuthorize("@securityTool.isAdmin()")
     @PostMapping("/api/synchronize/books")
     fun synchronizeBook(
             @RequestParam title: String,

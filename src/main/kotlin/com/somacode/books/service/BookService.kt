@@ -107,7 +107,7 @@ class BookService {
     }
 
     fun delete(id: Long) {
-        if (!bookRepository.existsByIdAndCreatedBy_Id(id, securityTool.getUserId())) {
+        if (!bookRepository.existsById(id)) {
             throw NotFoundException()
         }
         bookRepository.deleteById(id)
