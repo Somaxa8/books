@@ -33,7 +33,7 @@ class BookService {
             title: String, author: String?, date: LocalDate?, languageId: Long, categoryIds: List<Long>,
             editorial: String?, description: String?, bookFile: MultipartFile
     ): Book {
-        val book = Book(
+        var book = Book(
                 title = title,
                 language = languageService.findById(languageId),
                 book = documentService.create(bookFile, Document.Type.DOCUMENT, Book::class.java.simpleName)
@@ -47,7 +47,7 @@ class BookService {
         val response = bookRepository.save(book)
 
         categoryIds.forEach {
-            val book = findById(response.id!!)
+            book = findById(response.id!!)
             val bookCategory = bookCategoryService.findById(it)
             book.categories.add(bookCategory)
         }
@@ -138,6 +138,10 @@ class BookService {
         }
 
         return response
+    }
+
+    fun existsByIdAndCreatedBy_Id(id: Long, userId: Long): Boolean {
+        return bookRepository.existsByIdAndCreatedBy_Id(id, userId)
     }
 
 }
