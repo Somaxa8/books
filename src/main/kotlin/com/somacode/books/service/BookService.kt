@@ -33,7 +33,7 @@ class BookService {
             title: String, author: String?, date: LocalDate?, languageId: Long, categoryIds: List<Long>,
             editorial: String?, description: String?, bookFile: MultipartFile
     ): Book {
-        val book = Book(
+        var book = Book(
                 title = title,
                 language = languageService.findById(languageId),
                 book = documentService.create(bookFile, Document.Type.DOCUMENT, Book::class.java.simpleName)
@@ -47,7 +47,7 @@ class BookService {
         val response = bookRepository.save(book)
 
         categoryIds.forEach {
-            val book = findById(response.id!!)
+            book = findById(response.id!!)
             val bookCategory = bookCategoryService.findById(it)
             book.categories.add(bookCategory)
         }
@@ -107,10 +107,41 @@ class BookService {
     }
 
     fun delete(id: Long) {
-        if (!bookRepository.existsByIdAndCreatedBy_Id(id, securityTool.getUserId())) {
+        if (!bookRepository.existsById(id)) {
             throw NotFoundException()
         }
         bookRepository.deleteById(id)
+    }
+
+    fun synchronizeBook(
+            title: String, author: String, category: String, editorial: String,
+            description: String, bookFile: MultipartFile, coverFile: MultipartFile
+    ): Book {
+        val book = Book(
+                title = title,
+                author = author,
+                editorial = editorial,
+                description = description,
+                language = languageService.findById(1),
+                book = documentService.create(bookFile, Document.Type.DOCUMENT, Book::class.java.simpleName),
+                cover = documentService.create(coverFile, Document.Type.IMAGE, Book::class.java.simpleName)
+        )
+
+        val response = bookRepository.save(book)
+
+        if (!bookCategoryService.existByTitle(category)) {
+            val bookCategory = bookCategoryService.create(category)
+            bookCategoryService.relateCategory(bookCategory.id!!, response.id!!)
+        } else {
+            val bookCategory = bookCategoryService.findByTitle(category)
+            bookCategoryService.relateCategory(bookCategory.id!!, response.id!!)
+        }
+
+        return response
+    }
+
+    fun existsByIdAndCreatedBy_Id(id: Long, userId: Long): Boolean {
+        return bookRepository.existsByIdAndCreatedBy_Id(id, userId)
     }
 
 }

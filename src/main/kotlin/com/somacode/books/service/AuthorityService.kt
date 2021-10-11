@@ -3,6 +3,7 @@ package com.somacode.books.service
 import com.somacode.books.config.exception.NotFoundException
 import com.somacode.books.entity.Authority
 import com.somacode.books.repository.AuthorityRepository
+import com.somacode.books.security.SecurityTool
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
@@ -13,6 +14,7 @@ class AuthorityService {
 
     @Autowired lateinit var authorityRepository: AuthorityRepository
     @Autowired lateinit var userService: UserService
+    @Autowired lateinit var securityTool: SecurityTool
 
 
     fun init() {
@@ -56,6 +58,11 @@ class AuthorityService {
         return authorityRepository.findAll().onEach {
             it.enabled = roles.contains(it.role)
         }
+    }
+
+    fun hasRole(role: Authority.Role): Boolean {
+        val roles = authorityRepository.findByUsers_Id(securityTool.getUserId()).map { it.role }
+        return roles.contains(role)
     }
 
 }

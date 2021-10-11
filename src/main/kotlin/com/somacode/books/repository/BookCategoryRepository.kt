@@ -9,4 +9,8 @@ interface BookCategoryRepository: JpaRepository<BookCategory, Long> {
 
     fun existsByIdAndCreatedBy_Id(id: Long, userId: Long): Boolean
 
+    fun existsByTitle(title: String): Boolean
+
+    fun findByTitle(title: String): BookCategory
+
 }

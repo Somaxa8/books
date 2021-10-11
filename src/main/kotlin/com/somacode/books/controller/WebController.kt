@@ -13,7 +13,7 @@ class WebController {
 
     @GetMapping("/")
     fun getIndex(): ResponseEntity<String> {
-        return ResponseEntity.status(HttpStatus.OK).body("Hello Mercurio")
+        return ResponseEntity.status(HttpStatus.OK).body("Hello Somacode")
     }
 
     @GetMapping("/login")

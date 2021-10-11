@@ -2,6 +2,8 @@ package com.somacode.books.security
 
 import com.somacode.books.config.exception.UnauthorizedException
 import com.somacode.books.entity.Authority
+import com.somacode.books.service.AuthorityService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class SecurityTool {
+
+    @Autowired lateinit var authorityService: AuthorityService
 
     companion object {
         fun getAllAuthorities(): Collection<GrantedAuthority>? {
@@ -18,6 +22,10 @@ class SecurityTool {
             }
             return authorities
         }
+    }
+
+    fun isAdmin(): Boolean {
+        return authorityService.hasRole(Authority.Role.ADMIN)
     }
 
     fun isUser(id: Long): Boolean {
