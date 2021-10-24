@@ -54,7 +54,7 @@ class BookController {
         )
     }
 
-    @PreAuthorize("@securityTool.isUser(#userId)")
+    @PreAuthorize("@securityTool.isUser(#userId) or @securityTool.isAdmin()")
     @GetMapping("/api/@me/users/{userId}/books")
     fun getMyBooks(
             @PathVariable userId: Long,
