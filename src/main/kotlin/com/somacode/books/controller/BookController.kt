@@ -49,7 +49,7 @@ class BookController {
             @RequestParam(required = false) description: String?,
             @RequestParam(required = false) bookFile: MultipartFile?
     ): ResponseEntity<Book> {
-        return ResponseEntity.status(HttpStatus.CREATED).body(
+        return ResponseEntity.status(HttpStatus.OK).body(
                 bookService.update(id, title, author, date, languageId, categoryIds, editorial, description, bookFile)
         )
     }
@@ -91,7 +91,7 @@ class BookController {
                 .body(result.content)
     }
 
-    @PreAuthorize("@securityTool.isUser(#userId)")
+    @PreAuthorize("@securityTool.isUser(#userId) or @securityTool.isAdmin()")
     @GetMapping("/api/users/{userId}/books/favorites")
     fun getFavoriteBooks(
             @PathVariable userId: Long,
