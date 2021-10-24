@@ -18,7 +18,9 @@ class BookCategoryService {
     @Autowired lateinit var securityTool: SecurityTool
 
     fun init() {
-        if (bookCategoryRepository.count() == 0L) {
+        if (bookCategoryRepository.count() <= 0) {
+            println("BookCategoryService init()")
+
             create("Filosofía")
             create("Teología")
             create("Escolástica")
@@ -49,7 +51,7 @@ class BookCategoryService {
     }
 
     fun update(id: Long, request: BookCategory): BookCategory {
-        if (!bookCategoryRepository.existsByIdAndCreatedBy_Id(id, securityTool.getUserId())) {
+        if (!bookCategoryRepository.existsById(id)) {
             throw NotFoundException()
         }
 
