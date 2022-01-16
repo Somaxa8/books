@@ -35,7 +35,7 @@ class UserController {
         )
     }
 
-    @PreAuthorize("@securityTool.isUser(#userId)")
+    @PreAuthorize("@securityTool.isUser(#id)")
     @PatchMapping("/api/users/{id}")
     fun patchUser(
             @PathVariable id: Long,
@@ -78,7 +78,7 @@ class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
     }
 
-    @PreAuthorize("@securityTool.isUser(#userId)")
+    @PreAuthorize("@securityTool.isUser(#id)")
     @PatchMapping("/api/users/{id}/change-password")
     fun patchUserChangePassword(
             @PathVariable id: Long,
@@ -89,7 +89,7 @@ class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null)
     }
 
-    @PreAuthorize("@securityTool.isUser(#userId)")
+    @PreAuthorize("@securityTool.isUser(#id)")
     @PatchMapping("/api/users/{id}/avatar/update")
     fun patchUserAvatar(
             @PathVariable id: Long,
@@ -98,7 +98,7 @@ class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateAvatar(id, avatarFile))
     }
 
-    @PreAuthorize("@securityTool.isUser(#userId)")
+    @PreAuthorize("@securityTool.isUser(#id)")
     @DeleteMapping("/api/users/{id}/avatar/delete")
     fun deleteUserAvatar(@PathVariable id: Long): ResponseEntity<User> {
         return ResponseEntity.status(HttpStatus.OK).body(userService.deleteAvatar(id))
