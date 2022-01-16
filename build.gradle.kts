@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "2.3.3.RELEASE"
+	id("org.springframework.boot") version "2.3.12.RELEASE"
 	id("io.spring.dependency-management") version "1.0.10.RELEASE"
 	kotlin("jvm") version "1.5.10"
 	kotlin("plugin.spring") version "1.5.10"
@@ -22,6 +22,7 @@ repositories {
 }
 
 extra["springCloudVersion"] = "Hoxton.SR8"
+ext["log4j2.version"] = "2.17.1"
 
 dependencies {
 
@@ -30,7 +31,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-//	implementation("org.springframework.boot:spring-boot-starter-mail")
 	implementation("org.springframework.boot:spring-boot-starter-cache")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 
@@ -62,12 +62,12 @@ dependencies {
 	implementation( "com.squareup.retrofit2:converter-gson:2.9.0")
 
 	// RX
-	implementation("io.reactivex.rxjava2:rxjava:2.1.9")
+	implementation("io.reactivex.rxjava2:rxjava:2.2.21")
 	implementation("io.reactivex.rxjava2:rxkotlin:2.2.0")
 
 	// TOOL
-	implementation("com.google.code.gson:gson:2.8.2")
-	implementation("commons-io:commons-io:2.6")
+	implementation("com.google.code.gson:gson:2.8.9")
+	implementation("commons-io:commons-io:2.11.0")
 	implementation("com.github.javafaker:javafaker:1.0.2")
 
 	// TEST
