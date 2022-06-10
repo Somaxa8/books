@@ -11,7 +11,7 @@ task buildDocker(dependsOn: 'build') {
         exec {
             commandLine 'docker', 'run', '-d',
                     '--name', 'books',
-                    '--network', 'somacode',
+                    '--network', 'books',
                     '-p', '8080:8080',
                     '-v', pathStorage,
                     '--restart', 'always',
