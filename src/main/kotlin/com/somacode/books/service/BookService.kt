@@ -75,7 +75,6 @@ class BookService {
         book.categories = mutableSetOf()
 
         categoryIds.forEach {
-            val book = findById(id)
             val bookCategory = bookCategoryService.findById(it)
             book.categories.add(bookCategory)
         }
